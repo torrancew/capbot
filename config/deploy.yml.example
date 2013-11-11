@@ -1,0 +1,8 @@
+---
+servers:
+  example.com:
+    user: deploy
+    roles:
+      - app
+      - web
+

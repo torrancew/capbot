@@ -8,6 +8,8 @@ gem 'super-config', '~> 0.0.1.dev'
 
 group :development do
   gem 'pry'
-  gem 'capistrano', '~> 3.0.0'
+  gem 'capistrano',       '~> 3.0'
+  gem 'capistrano-rbenv', :git => 'git://github.com/capistrano/rbenv.git'
+  gem 'capistrano-bundler'
 end
 
