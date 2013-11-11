@@ -1,0 +1,50 @@
+#! /usr/bin/env ruby
+
+require 'cinch'
+require 'capbot/config'
+
+$config = CapBot::Config.load_config
+ssl_cfg = Cinch::Configuration::SSL.new
+
+def help_text
+  kw = Array.new
+  $config.keywords.to_h.keys.each do |category|
+    $config.keywords.to_h[category].to_h.keys.each do |word|
+      kw << "!#{word}"
+    end
+  end
+
+  return sprintf('I respond to the following keywords: %s', kw.join(','))
+end
+
+capbot = Cinch::Bot.new do
+  ssl_cfg.use = $config.ssl
+  configure do |c|
+    c.server   = $config.server
+    c.port     = $config.port
+    c.nick     = $config.name
+    c.user     = $config.user
+    c.channels = $config.rooms
+    c.ssl      = ssl_cfg
+    c.password = $config.password unless $config.password.nil?
+  end
+
+  # Add commands for link keywords
+  $config.keywords.links.to_h.each do |kw, url|
+    on :message, /(?:^|\b)!#{kw}(?: ([^\b]+))?/ do |m, who|
+      (who.nil? ? m.reply(url) : User(who).send(url))
+    end
+  end
+
+  # Add a help command
+  on :message, /(?:^|\b)!help(?: ([^\b]+))?/ do |m, who|
+    if who.nil?
+      m.reply help_text
+    else
+      User(who).send help_text
+    end
+  end
+end
+
+capbot.start
+
