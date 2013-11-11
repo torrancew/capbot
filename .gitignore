@@ -1,3 +1,5 @@
 /pkg
+/.env
+/.bundle
 /Gemfile.lock
 
