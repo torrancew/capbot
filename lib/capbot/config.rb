@@ -39,6 +39,7 @@ class CapBot::Config < SuperConfig
   def self.load_environment
     env = super
     env.each_setting{ |var, val| env[var] = parse_env_array(val) }
+    env.rooms = [env.rooms] unless env.rooms.respond_to?(:each)
     return env
   end # def self.load_environment
 
